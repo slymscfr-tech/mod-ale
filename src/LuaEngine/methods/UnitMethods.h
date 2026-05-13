@@ -2750,5 +2750,27 @@ namespace LuaUnit
         ALE::Push(L, unit->GetThreatMgr().GetThreat(target));
         return 1;
     }
+
+    /**
+     * Return `true` if the [Unit] is [Pet]
+     *
+     * @return bool isPet
+     */
+    int IsPet(lua_State* L, Unit* unit)
+    {
+        ALE::Push(L, creature->IsPet());
+        return 1;
+    }
+
+    /**
+     * Attempts to convert the [Unit] to a [Pet].
+     *
+     * @return [Pet] pet : the [Unit] as a [Pet], or `nil`
+     */
+    int ToPet(lua_State* L, Unit* unit)
+    {
+        ALE::Push(L, creature->ToPet());
+        return 1;
+    }
 };
 #endif
