@@ -416,6 +416,7 @@ ALERegister<Unit> UnitMethods[] =
     { "IsCasting", &LuaUnit::IsCasting },
     { "IsStandState", &LuaUnit::IsStandState },
     { "IsOnVehicle", &LuaUnit::IsOnVehicle },
+    { "IsPet", &LuaUnit::IsPet },
 
     // Other
     { "HandleStatFlatModifier", &LuaUnit::HandleStatFlatModifier },
@@ -471,6 +472,7 @@ ALERegister<Unit> UnitMethods[] =
     { "ModifyThreatPct", &LuaUnit::ModifyThreatPct },
     { "ClearThreat", &LuaUnit::ClearThreat },
     { "ResetAllThreat", &LuaUnit::ResetAllThreat },
+    { "ToPet", &LuaUnit::ToPet },
 
     { NULL, NULL }
 };
