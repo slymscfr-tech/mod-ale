@@ -2758,7 +2758,7 @@ namespace LuaUnit
      */
     int IsPet(lua_State* L, Unit* unit)
     {
-        ALE::Push(L, creature->IsPet());
+        ALE::Push(L, unit->IsPet());
         return 1;
     }
 
@@ -2769,7 +2769,7 @@ namespace LuaUnit
      */
     int ToPet(lua_State* L, Unit* unit)
     {
-        ALE::Push(L, creature->ToPet());
+        ALE::Push(L, unit->ToPet());
         return 1;
     }
 };
