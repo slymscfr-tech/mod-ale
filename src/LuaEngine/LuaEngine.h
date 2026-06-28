@@ -133,6 +133,11 @@ private:
     // lua path variable for require() function
     static std::string lua_requirepath;
     static std::string lua_requirecpath;
+    // Whether manifest mode is active (root manifest.json found)
+    static bool lua_manifest_mode;
+
+    // Manifest-based script loading
+    static void LoadScriptPathsFromManifest();
 
     // A counter for lua event stacks that occur (see event_level).
     // This is used to determine whether an object belongs to the current call stack or not.

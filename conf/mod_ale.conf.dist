@@ -71,6 +71,32 @@ ALE.AutoReloadInterval = 1
 ALE.BytecodeCache = true
 
 ###################################################################################################
+#  MANIFEST MODE (auto-detected)
+#
+#   When a manifest.json file is found in the script folder (lua_scripts/),
+#   ALE automatically switches to manifest-based loading (inspired by FiveM).
+#   No config option needed - just create the manifest file.
+#
+#   In manifest mode:
+#     - .ext extension files are NOT loaded
+#     - Modules are loaded in the order specified by the root manifest
+#     - Files within each module are loaded in the order specified by the module manifest
+#     - If no manifest.json exists, legacy recursive scanning is used
+#
+#   Root manifest (lua_scripts/manifest.json):
+#       {
+#           "modules": ["module_a", "module_b"]
+#       }
+#
+#   Module manifest (lua_scripts/module_a/manifest.json):
+#       {
+#           "files": ["init.lua", "handlers/player.lua"]
+#       }
+#
+#       If a module has no manifest.json, all supported files in that
+#       directory are loaded recursively (legacy behavior within the module).
+
+###################################################################################################
 # LOGGING SYSTEM SETTINGS
 #
 #  Appender config values: Given an appender "name"

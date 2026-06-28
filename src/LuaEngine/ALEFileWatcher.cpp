@@ -78,7 +78,8 @@ void ALEFileWatcher::WatchLoop()
 bool ALEFileWatcher::IsWatchedFileType(const std::string& filename) {
     return (filename.length() >= 4 && filename.substr(filename.length() - 4) == ".lua") ||
         (filename.length() >= 4 && filename.substr(filename.length() - 4) == ".ext") ||
-        (filename.length() >= 5 && filename.substr(filename.length() - 5) == ".moon");
+        (filename.length() >= 5 && filename.substr(filename.length() - 5) == ".moon") ||
+        (filename.length() >= 5 && filename.substr(filename.length() - 5) == ".json");
 }
 
 void ALEFileWatcher::ScanDirectory(const std::string& path)

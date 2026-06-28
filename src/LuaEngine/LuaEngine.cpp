@@ -15,6 +15,7 @@
 #include "ALEUtility.h"
 #include "ALECreatureAI.h"
 #include "ALEInstanceAI.h"
+#include "ALEManifest.h"
 
 #if AC_PLATFORM == AC_PLATFORM_WINDOWS
 #define ALE_WINDOWS
@@ -46,6 +47,7 @@ ALE::ScriptList ALE::lua_extensions;
 std::string ALE::lua_folderpath;
 std::string ALE::lua_requirepath;
 std::string ALE::lua_requirecpath;
+bool ALE::lua_manifest_mode = false;
 ALE* ALE::GALE = NULL;
 bool ALE::reload = false;
 bool ALE::initialized = false;
@@ -132,7 +134,19 @@ void ALE::LoadScriptPaths()
     lua_requirepath.clear();
     lua_requirecpath.clear();
 
-    GetScripts(lua_folderpath);
+    // Auto-detect manifest mode: if a root manifest.json exists, use manifest-based loading.
+    // Otherwise, fall back to legacy recursive scanning.
+    if (ALEManifest::HasRootManifest(lua_folderpath))
+    {
+        lua_manifest_mode = true;
+        ALE_LOG_INFO("[ALE]: Manifest mode enabled - root manifest.json found");
+        LoadScriptPathsFromManifest();
+    }
+    else
+    {
+        lua_manifest_mode = false;
+        GetScripts(lua_folderpath);
+    }
 
     // append our custom require paths and cpaths if the config variables are not empty
     if (!lua_path_extra.empty())
@@ -149,6 +163,46 @@ void ALE::LoadScriptPaths()
         lua_requirecpath.erase(lua_requirecpath.end() - 1);
 
     ALE_LOG_DEBUG("[ALE]: Loaded {} scripts in {} ms", lua_scripts.size() + lua_extensions.size(), ALEUtil::GetTimeDiff(oldMSTime));
+}
+
+void ALE::LoadScriptPathsFromManifest()
+{
+    uint32 oldMSTime = ALEUtil::GetCurrTime();
+
+    // Load the root manifest and all module manifests.
+    // The require path/cpath are built by the manifest loader as it processes modules.
+    std::vector<ModuleManifest> modules = ALEManifest::LoadRootManifest(
+        lua_folderpath, lua_requirepath, lua_requirecpath);
+
+    // Populate lua_scripts in the order defined by the manifests.
+    // In manifest mode, .ext files are not loaded, so lua_extensions stays empty.
+    for (auto const& mod : modules)
+    {
+        for (auto const& script : mod.scripts)
+        {
+            lua_scripts.push_back(script);
+        }
+    }
+
+    // Append custom require paths from config
+    const std::string& lua_path_extra = static_cast<std::string>(ALEConfig::GetInstance().GetRequirePath());
+    const std::string& lua_cpath_extra = static_cast<std::string>(ALEConfig::GetInstance().GetRequireCPath());
+
+    if (!lua_path_extra.empty())
+        lua_requirepath += lua_path_extra;
+
+    if (!lua_cpath_extra.empty())
+        lua_requirecpath += lua_cpath_extra;
+
+    // Erase last ;
+    if (!lua_requirepath.empty())
+        lua_requirepath.erase(lua_requirepath.end() - 1);
+
+    if (!lua_requirecpath.empty())
+        lua_requirecpath.erase(lua_requirecpath.end() - 1);
+
+    ALE_LOG_INFO("[ALE]: Loaded {} scripts from {} module(s) in {} ms",
+        lua_scripts.size(), modules.size(), ALEUtil::GetTimeDiff(oldMSTime));
 }
 
 void ALE::_ReloadALE()
@@ -686,10 +740,20 @@ void ALE::RunScripts()
         ClearTimestampCache();
 
     ScriptList scripts;
-    lua_extensions.sort(ScriptPathComparator);
-    lua_scripts.sort(ScriptPathComparator);
-    scripts.insert(scripts.end(), lua_extensions.begin(), lua_extensions.end());
-    scripts.insert(scripts.end(), lua_scripts.begin(), lua_scripts.end());
+    if (lua_manifest_mode)
+    {
+        // In manifest mode, scripts are already in the correct order - do NOT sort.
+        // Extensions are not loaded in manifest mode.
+        scripts.insert(scripts.end(), lua_scripts.begin(), lua_scripts.end());
+    }
+    else
+    {
+        // Legacy mode: sort alphabetically, extensions first.
+        lua_extensions.sort(ScriptPathComparator);
+        lua_scripts.sort(ScriptPathComparator);
+        scripts.insert(scripts.end(), lua_extensions.begin(), lua_extensions.end());
+        scripts.insert(scripts.end(), lua_scripts.begin(), lua_scripts.end());
+    }
 
     std::unordered_map<std::string, std::string> loaded; // filename, path
 
