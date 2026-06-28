@@ -19,6 +19,7 @@
 - [Your First Script](#-your-first-script)
 - [Lua Basics](#-lua-basics)
 - [ALE Basics](#-ale-basics)
+- [Manifest Mode](#-manifest-mode)
 - [Script Reloading](#-script-reloading)
 - [Getting Help](#-getting-help)
 
@@ -230,6 +231,37 @@ local function OnChat(event, player, msg, type, lang)
     end
 end
 ```
+
+## 📦 Manifest Mode
+
+ALE supports a manifest-based script loading system, inspired by FiveM's resource system. When a `manifest.json` file is found in your script folder, ALE automatically switches to manifest mode.
+
+### Why Use Manifests?
+
+In legacy mode, files are loaded in alphabetical order by path. This can break dependencies - for example, `handlers/player.lua` loads before `init.lua` because `h` comes before `i` alphabetically.
+
+Manifest mode gives you explicit control over load order.
+
+### Quick Example
+
+**`lua_scripts/manifest.json`** (root manifest):
+```json
+{
+    "modules": ["my_module"]
+}
+```
+
+**`lua_scripts/my_module/manifest.json`** (module manifest):
+```json
+{
+    "files": ["init.lua", "handlers/player.lua"]
+}
+```
+
+This ensures `init.lua` loads before `handlers/player.lua`.
+
+> [!TIP]
+> For the complete manifest system documentation including retrocompatibility, fallback behavior, and migration guide, see **[Manifest System](MANIFEST.md)**.
 
 ## 🔄 Script Reloading
 

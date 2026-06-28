@@ -21,6 +21,7 @@ ALE is a powerful, AzerothCore-specific implementation of a Lua scripting engine
 ### Key Features
 - **Native AzerothCore Integration**: Built specifically for AzerothCore's architecture
 - **Enhanced API**: Extended functionality for AzerothCore, beyond the original Eluna specification.
+- **Manifest-Based Loading**: FiveM-inspired manifest system for explicit control over module and file load order (see [Manifest System](docs/MANIFEST.md))
 - **Community-Driven Development**: Actively maintained with community contributions
 
 ## ⚠️ Compatibility Notice
@@ -83,6 +84,7 @@ make -j$(nproc)
 ### Getting Started
 - **[Installation Guide](docs/INSTALL.md)** - Complete installation and setup instructions
 - **[Usage Guide](docs/USAGE.md)** - Learn how to write your first Lua scripts
+- **[Manifest System](docs/MANIFEST.md)** - Manifest-based script loading with explicit load order control
 - **[Implementation Details](docs/IMPL_DETAILS.md)** - Advanced features and technical details
 
 ### Advanced Topics

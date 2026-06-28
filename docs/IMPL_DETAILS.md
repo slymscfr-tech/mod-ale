@@ -17,6 +17,7 @@
 
 - [Configuration](#-configuration)
 - [Script Management](#-script-management)
+- [Manifest System](#-manifest-system)
 - [Advanced Features](#-advanced-features)
 - [Database Integration](#-database-integration)
 - [Performance Tips](#-performance-tips)
@@ -73,6 +74,9 @@ Files with `.ext` extension load before standard `.lua` files:
 > [!TIP]
 > Instead of using `.ext`, prefer the standard Lua `require()` function for better maintainability.
 
+> [!NOTE]
+> In manifest mode, `.ext` files are **not loaded**. See [Manifest System](MANIFEST.md) for details.
+
 #### Using Require
 
 The entire script folder structure is added to Lua's require path:
@@ -86,6 +90,33 @@ require("helpers")
 ```
 
 **Note:** Omit the `.lua` extension when using `require()`.
+
+## 📦 Manifest System
+
+ALE supports an optional manifest-based script loading system, inspired by FiveM's resource system. This is **auto-detected**: if a `manifest.json` file exists in your script folder, manifest mode is activated automatically.
+
+### Key Differences from Legacy Mode
+
+| Feature | Legacy Mode | Manifest Mode |
+|---------|-------------|---------------|
+| File discovery | Recursive scan | Only files listed in manifests |
+| Load order | Alphabetical by path | Order defined in manifests |
+| `.ext` files | Loaded first | Not loaded |
+| Detection | Always | Auto-detected via `manifest.json` |
+
+### How It Works
+
+1. A root `manifest.json` in the script folder lists modules to load (in order)
+2. Each module can have its own `manifest.json` listing files to load (in order)
+3. If a module has no manifest, its files are scanned recursively
+
+### Retrocompatibility
+
+- No `manifest.json` → legacy mode (fully backward compatible)
+- Gradual migration: add a root manifest first, then add module manifests as needed
+
+> [!TIP]
+> For complete documentation including examples, migration guide, and edge cases, see **[Manifest System](MANIFEST.md)**.
 
 ## 🎯 Advanced Features
 
