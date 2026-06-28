@@ -259,7 +259,7 @@ LuaScript ALEManifest::BuildScriptEntry(
 {
     LuaScript script;
 
-    // Extract filename and extension
+    // Extract extension from basename
     fs::path filePath(relativePath);
     std::string filename = filePath.filename().generic_string();
 
@@ -267,12 +267,24 @@ LuaScript ALEManifest::BuildScriptEntry(
     if (extDot != std::string::npos)
     {
         script.fileext = filename.substr(extDot);
-        script.filename = filename.substr(0, extDot);
     }
     else
     {
         script.fileext = "";
-        script.filename = filename;
+    }
+
+    // Use relative path (without extension) as script name to avoid collisions
+    // when multiple files share the same basename in different subdirectories.
+    // e.g., "config/main" and "logging/main" instead of "main" and "main"
+    std::string relWithoutExt = relativePath;
+    std::size_t relExtDot = relWithoutExt.find_last_of('.');
+    if (relExtDot != std::string::npos)
+    {
+        script.filename = relWithoutExt.substr(0, relExtDot);
+    }
+    else
+    {
+        script.filename = relWithoutExt;
     }
 
     // Full absolute path
