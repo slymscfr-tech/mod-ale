@@ -19,7 +19,7 @@
 - [Your First Script](#-your-first-script)
 - [Lua Basics](#-lua-basics)
 - [ALE Basics](#-ale-basics)
-- [Manifest Mode](#-manifest-mode)
+- [Manifest Mode](#manifest-mode)
 - [Script Reloading](#-script-reloading)
 - [Getting Help](#-getting-help)
 

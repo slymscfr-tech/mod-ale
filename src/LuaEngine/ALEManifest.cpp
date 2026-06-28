@@ -10,6 +10,7 @@
 #include <fkYAML/node.hpp>
 
 #include <boost/filesystem.hpp>
+#include <algorithm>
 #include <cstdio>
 #include <functional>
 
@@ -154,12 +155,23 @@ std::vector<LuaScript> ALEManifest::LoadModuleManifest(
 
                     std::string ext = filename.substr(extDot);
                     if (IsSupportedExtension(ext))
-                        scripts.push_back(BuildScriptEntry(filename, modulePath));
+                    {
+                        // Compute path relative to modulePath to preserve subdirectory information
+                        fs::path relPath = fs::relative(it->path(), fs::path(modulePath));
+                        scripts.push_back(BuildScriptEntry(relPath.generic_string(), modulePath));
+                    }
                 }
             }
         };
 
         scanDir(fs::path(modulePath));
+
+        // Sort to match legacy alphabetical stability
+        std::sort(scripts.begin(), scripts.end(),
+            [](LuaScript const& a, LuaScript const& b) {
+                return a.filepath < b.filepath;
+            });
+
         return scripts;
     }
 
@@ -276,5 +288,7 @@ LuaScript ALEManifest::BuildScriptEntry(
 bool ALEManifest::IsSupportedExtension(std::string const& ext)
 {
     // In manifest mode, .ext files are NOT supported
-    return ext == ".lua" || ext == ".moon" || ext == ".dll" || ext == ".so" || ext == ".out";
+    // .dll and .so are native libraries that should only be discovered
+    // through lua_requirecpath, not loaded as startup scripts via RunScripts().
+    return ext == ".lua" || ext == ".moon" || ext == ".out";
 }

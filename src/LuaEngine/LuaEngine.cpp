@@ -184,23 +184,8 @@ void ALE::LoadScriptPathsFromManifest()
         }
     }
 
-    // Append custom require paths from config
-    const std::string& lua_path_extra = static_cast<std::string>(ALEConfig::GetInstance().GetRequirePath());
-    const std::string& lua_cpath_extra = static_cast<std::string>(ALEConfig::GetInstance().GetRequireCPath());
-
-    if (!lua_path_extra.empty())
-        lua_requirepath += lua_path_extra;
-
-    if (!lua_cpath_extra.empty())
-        lua_requirecpath += lua_cpath_extra;
-
-    // Erase last ;
-    if (!lua_requirepath.empty())
-        lua_requirepath.erase(lua_requirepath.end() - 1);
-
-    if (!lua_requirecpath.empty())
-        lua_requirecpath.erase(lua_requirecpath.end() - 1);
-
+    // Note: custom require paths from config and final ; trimming are handled
+    // by the caller LoadScriptPaths() to avoid duplication with manifest mode.
     ALE_LOG_INFO("[ALE]: Loaded {} scripts from {} module(s) in {} ms",
         lua_scripts.size(), modules.size(), ALEUtil::GetTimeDiff(oldMSTime));
 }

@@ -17,7 +17,7 @@
 
 - [Configuration](#-configuration)
 - [Script Management](#-script-management)
-- [Manifest System](#-manifest-system)
+- [Manifest System](#manifest-system)
 - [Advanced Features](#-advanced-features)
 - [Database Integration](#-database-integration)
 - [Performance Tips](#-performance-tips)

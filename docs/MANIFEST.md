@@ -15,14 +15,14 @@
 
 ## 📋 Table of Contents
 
-- [Overview](#-overview)
-- [How It Works](#-how-it-works)
-- [Root Manifest](#-root-manifest)
-- [Module Manifest](#-module-manifest)
-- [Load Order](#-load-order)
-- [Retrocompatibility](#-retrocompatibility)
-- [Differences from Legacy Mode](#-differences-from-legacy-mode)
-- [Examples](#-examples)
+- [Overview](#overview)
+- [How It Works](#how-it-works)
+- [Root Manifest](#root-manifest)
+- [Module Manifest](#module-manifest)
+- [Load Order](#load-order)
+- [Retrocompatibility](#retrocompatibility)
+- [Differences from Legacy Mode](#differences-from-legacy-mode)
+- [Examples](#examples)
 
 ## 🚀 Overview
 
@@ -288,5 +288,5 @@ lua_scripts/
 <div align="center">
 <sub>Developed with ❤️ by the AzerothCore and ALE community</sub>
 
-[⬆ Back to Top](#-ale-manifest-system)
+[⬆ Back to Top](#ale-manifest-system)
 </div>
